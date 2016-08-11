@@ -25,7 +25,7 @@ if(array_key_exists("go", $_GET))
 
 
 /*
-Funktsioon, mis laeb igasugu faile sisse
+Funktsioon, mis laadib igasugu PHP faile sisse
 */
 function LoadLibrary($filePath, $FullPath)
 {
@@ -43,7 +43,7 @@ function LoadLibrary($filePath, $FullPath)
 
 
 /*
-Funktsioon, mis laeb igasugu faile sisse
+Funktsioon, mis laadib igasugu faile sisse
 */
 function SetRootFilePath($filePath, $fileName)
 {
