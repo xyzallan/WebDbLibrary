@@ -196,7 +196,7 @@ function MuudaKoord(ip, pl)
 function SendPostData(Tunnus, Vaartus)
 {
 
-$.post("https://jarvselja.emu.ee/setpost.php", 	
+$.post("<?=$ISConfig->SavePath?>", 	
 	{
 		"Tunnus" : Tunnus,
 		"Vaartus": Vaartus
@@ -208,5 +208,4 @@ $.post("https://jarvselja.emu.ee/setpost.php",
 
 
 }
-
 </script>
