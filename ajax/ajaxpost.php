@@ -24,23 +24,6 @@ $.post("<?=$ISConfig->SavePath?>",
 
 }
 
-function SendInsertProcData(sProc, sParam, sTabel)
-{
-
-$.get("<?=$ISConfig->InsePath?>", 	
-	{
-		"protseduur" : sProc, 
-		"tabelinimi" : sTabel, 
-		"vaartus"      : sParam
-	},
-    function(data) {
-	//alert(data);	
-                location.reload();
-	}
-) ;
-
-
-}
 
 function SendSaveDataX(sVaartus, sVali, sTabel, rowid, FormID, datamet, sValjatyyp)
 {
@@ -61,7 +44,6 @@ $.get("<?=$ISConfig->SavePath?>",
 		"meetod"     : datamet
 	},
     function(data) {
-		//alert("Tehtud");
 		$("#" + FormID).css('background-color', data);
 	}
 );
@@ -80,7 +62,6 @@ if(confirm("Kas kustutada? " + sTabel + " id=" + rowid))
 		"meetod"     : "delete"
 	},
     function(data) {
-		//alert("Tehtud");
 		location.reload();
 	}
 ) ;
@@ -115,9 +96,7 @@ $.get("<?=$ISConfig->SavePath?>",
 
         var kloon2 = $('<tr id = "X_sisu_' + uus + '">' + $('table#gentbl tbody>tr:last').html() + '</' + 'tr>');
 
-
         var rida = 0;
-
         var read = "";
 
         $("table#gentbl tbody").find('tr').each(
@@ -132,28 +111,27 @@ $.get("<?=$ISConfig->SavePath?>",
         });	
 
 
-		$("#X_sisu_" + count + ' td > input, select, textarea').each(function(index, Element){
-			var Elem = $(Element).attr('onchange');
-			if(typeof(Elem) === 'undefined'){} else
-			{
-			var osad = Elem.split(',');
-			var uID = $(Element).attr('id') +'_'+ Math.floor(Math.random() * 10000);
-			$(Element).attr('id', uID);
-			
-			if("'" + sTabel + "'" == osad[2]){
-					$(Element).attr('onchange', 
-					osad[0].replace('SendInsertData','SendSaveData') +  "," + osad[1] + ","+ osad[2]+", "+data+", '"+uID+"', 'update', "+osad[6]+")");
-				};
-			}
-                    
-                //$(Element).attr('onclick',"NaitaSisu('"+uID+"')");
-					
-			});	
+	$("#X_sisu_" + count + ' td > input, select, textarea').each(function(index, Element){
+		var Elem = $(Element).attr('onchange');
+		if(typeof(Elem) === 'undefined'){} else
+		{
+		var osad = Elem.split(',');
+		var uID = $(Element).attr('id') +'_'+ Math.floor(Math.random() * 10000);
+		$(Element).attr('id', uID);
+		
+		if("'" + sTabel + "'" == osad[2]){
+				$(Element).attr('onchange', 
+				osad[0].replace('SendInsertData','SendSaveData') +  "," + osad[1] + ","+ osad[2]+", "+data+", '"+uID+"', 'update', "+osad[6]+")");
+			};
+		}
+            
+
+		});	
 
         $('table#gentbl tbody>tr:last').after(kloon2); 
-		$("#X_sisu_" + uus + ' td > input, select, textarea').each(function(index, Element){
-                        $(Element).attr('value', '');
-		});	
+	$("#X_sisu_" + uus + ' td > input, select, textarea').each(function(index, Element){
+                $(Element).attr('value', '');
+	});	
 
 }
 ) ;
@@ -161,51 +139,19 @@ $.get("<?=$ISConfig->SavePath?>",
 }
 
 </script>
-<script type="text/javascript">
 
-function NaitaSisu(FormID)
-{
-	var TrID = $("#"+FormID).parent().parent().attr('id');
-
-	var Kokku = '';
-	$("#" + TrID + ' td > input, select, textarea').each(function(index, Element){
-		Kokku = Kokku + ", "+" "+ $(Element).attr('name');
-	});
-
-	$("#tagasi").text($("#"+FormID).parent().parent().attr('id') + "; " +$("#"+FormID).parent().parent().html());
-}
-</script>
-
-<script type="text/javascript">
-function MuudaKoord(ip, pl)
-{
-
-    var src = new Proj4js.Proj("EPSG:3301");
-    var dst = new Proj4js.Proj("EPSG:4326");
-
-    var point = new Proj4js.Point(ip, pl);
-
-    Proj4js.transform(src, dst, point);
-
-    alert(point.x + " : " + point.y);
-    
-}
-</script>
 <script type="text/javascript">
 
 function SendPostData(Tunnus, Vaartus)
 {
-
 $.post("<?=$ISConfig->SavePath?>", 	
 	{
-		"Tunnus" : Tunnus,
-		"Vaartus": Vaartus
+	"Tunnus" : Tunnus,
+	"Vaartus": Vaartus
 	},
     function(data) {
-		location.reload();
+	location.reload();
 	}
 ) ;
-
-
 }
 </script>
