@@ -111,23 +111,23 @@ if(count(Get_Value($GLOBALS,'MenuKirjed')) > 0):
 		{
 			if (Get_Value($kirj,'position') == 'hori'):
 
-                $MenuRead['Level' . Get_Value($kirj, 'level')] .= sprintf("\n [ <a href='?%s=%s&amp;%s' class='%s'>%s</a> ] ", Get_Value($kirj, 'str'), $value, Get_Value($kirj, 'request'), Get_Value($kirj, 'style'), $key);
-                
+                $MenuRead['Level' . Get_Value($kirj, 'level')] .= sprintf("\n <td><a href='?%s=%s&amp;%s' class='%s'><button>%s</button></a> ", Get_Value($kirj, 'str'), $value, Get_Value($kirj, 'request'), Get_Value($kirj, 'style'), $key);
 			
 			endif;
 		}
 	}
 endif;
 
+echo "<table border=0>";
 foreach($MenuRead as $Key=>$Value)
 {
     if(strlen($Value)>0)
     {
-        echo "<B>" . Get_Value($ISConfig->LevelStrings, $Key, '') . "</B>" .  $Value . "<BR>";
+        echo "<tr><td><B>" . Get_Value($ISConfig->LevelStrings, $Key, '') . "</B>" .  $Value ;
     }
     
 }    
-
+echo "</table>";
 ?>
 </div>
 
