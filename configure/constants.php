@@ -13,6 +13,7 @@ define('parsFieldDescr',         'opt_FieldDescr');
 define('parsFieldType',          'opt_FieldType');
 define('parsReadWrite',          'opt_ReadorWrite');
 define('parsNumSep',             'opt_NumSep');
+define('parsDecimals',           'koma');
 
 
 define('pdf_PrintLevel',         'opt_PrnYldNo');
