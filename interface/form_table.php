@@ -18,122 +18,123 @@ function GeneTableRow($Row, $cols, $KirjuOigus, $hidden_fix, $isSumRow = false, 
 	
 	global $ISConfig;
 	$table_name = Get_Value($hidden_fix, 'table','');
-
+	
 	$FFUlName = Get_Value($hidden_fix,'ul_name', '');
 	$FFUlValue = Get_Value($hidden_fix,'ul_value', '');
 
-    PrintArray($Row);
+	PrintArray($Row);
 
-    if (is_array($cols)) :
+	if (is_array($cols)) :
 
-	    $colcount = 0;
-        foreach($cols as $col=>$type):
+	$colcount = 0;
+	
+	foreach($cols as $col=>$type):
 
-            if(!is_null($numCols)):
-			    echo $colcount%$numCols == 0 ? "\n<tr>" : ""; 
-			    echo "\n<td class='parem'><i>" . Get_Value($type, parsFieldDescr) . "</i>: ";
-            endif;
+		if(!is_null($numCols)):
+			echo $colcount%$numCols == 0 ? "\n<tr>" : ""; 
+			echo "\n<td class='parem'><i>" . Get_Value($type, parsFieldDescr) . "</i>: ";
+		endif;
 		
 		
-            $txtSisu = Get_Value($Row, $col);
-            $txtType = Get_Value($type, parsFieldType);
-            $txtRead = Get_Value($type, parsReadWrite);
-            $txtForm = Get_Value($type,'koma', null);
-            $celType = '';
-            $style = '';
-			$IDvali = Get_Value($type, 'otid','id');
+		$txtSisu = Get_Value($Row, $col);
+		$txtType = Get_Value($type, parsFieldType);
+		$txtRead = Get_Value($type, parsReadWrite);
+		$txtForm = Get_Value($type,'koma', null);
+		$celType = '';
+		$style = '';
+		$IDvali = Get_Value($type, 'otid','id');
+		
+		$FormFieldTable = Get_Value($type, 'table', $table_name);
+
+		if(array_key_exists('cell', $type)):
+			$celType = $type['cell'][parsFieldType];
+		endif;
+
+		$ct = '';
+		
+		if(array_key_exists('cell', $type)):
+			$ct = $type['cell'][parsFieldType];
+		endif;
+
+		$VoibKirjutada = ($txtRead == constRoW_W && $KirjuOigus);	
 			
-            $FormFieldTable = Get_Value($type, 'table', $table_name);
+		$ip_taust = "";
+		
+		switch($txtType)
+		{
+		case 'n':
+			$txtSisu = Num2Text($txtSisu, $txtForm);
+			if($ct == 'CB'):
+				$style='kesk';
+			else:
+				$style='parem';
+			endif;
+			break;
 
-            if(array_key_exists('cell', $type)):
-				$celType = $type['cell'][parsFieldType];
-            endif;
+		case 'i':
+			$style='kesk';
+			break;
+		case 'c':
+			$style='vasak';
+			break;
 
-            $ct = '';
+		case 'd':
+			list($year, $month, $day) = sscanf($txtSisu, "%d-%d-%d");
+			$txtSisu = sprintf("%02d.%02d.%04d", $day, $month, $year);
+		}
 
-            if(array_key_exists('cell', $type))
-            {
-                $ct = $type['cell'][parsFieldType];
-            }
+		$FormFieldName = 'f-'.Get_Value($type, parsFieldType).'-'.$col;
 
-			$VoibKirjutada = ($txtRead == constRoW_W && $KirjuOigus);	
-				
-			$ip_taust = "";
-			switch($txtType)
-			{
-				case 'n':
-					$txtSisu = Num2Text($txtSisu, $txtForm);
-					if($ct == 'CB'):
-						$style='kesk';
-					else:
-						$style='parem';
-					endif;
-					break;
+		echo "\n\t<td class='".$style."'>";
 
-				case 'i':
-					$style='kesk';
-					break;
-				case 'c':
-					$style='vasak';
-					break;
-
-				case 'd':
-					list($year, $month, $day) = sscanf($txtSisu, "%d-%d-%d");
-					$txtSisu = sprintf("%02d.%02d.%04d", $day, $month, $year);
-			}
-
-			$FormFieldName = 'f-'.Get_Value($type, parsFieldType).'-'.$col;
-
-			echo "\n\t<td class='".$style."'>";
-
-			PrintArray($type, 'form_table: $type');
+		PrintArray($type, 'form_table: $type');
 			
-			switch($ct)
-			{
-				case 'pdf':
-					$Link = Get_Value($type, 'link');
-					printf("<a href='%s%s?%s=%d' target='_blank'>PDF</a>", $ISConfig->www_server, Get_Value($Link, "FileName"), Get_Value($Link, "idname"), Get_Value($Row, Get_Value($Link, "idfield")));
-					break;
-				case 'SelO':
-					$idcol = Get_Value($type['cell'], 'idcol','id');
-					$namecol = Get_Value($type['cell'], 'namecol', 'nimi');
-					echo spf_SelO($txtSisu, $FormFieldName, $FormFieldTable, Get_Value($Row, $IDvali), $type['cell']['tbl'], $type['cell']['ord'], $idcol, $namecol, $FFUlName, $FFUlValue, $VoibKirjutada);
-					break;
+		switch($ct)
+		{
+		case 'pdf':
+			$Link = Get_Value($type, 'link');
+			printf("<a href='%s%s?%s=%d' target='_blank'>PDF</a>", $ISConfig->www_server, Get_Value($Link, "FileName"), Get_Value($Link, "idname"), Get_Value($Row, Get_Value($Link, "idfield")));
+			break;
+		case 'SelO':
+			$idcol = Get_Value($type['cell'], 'idcol','id');
+			$namecol = Get_Value($type['cell'], 'namecol', 'nimi');
+			echo spf_SelO($txtSisu, $FormFieldName, $FormFieldTable, Get_Value($Row, $IDvali), $type['cell']['tbl'], $type['cell']['ord'], $idcol, $namecol, $FFUlName, $FFUlValue, $VoibKirjutada);
+			break;
 
-				case 'SelOg':
-					$idcol = Get_Value($type['cell'], 'idcol','id');
-					$namecol = Get_Value($type['cell'], 'namecol', 'nimi');
-					$grupp = $type['cell']['groupcol'];
-					echo spf_SelOg($txtSisu, $FormFieldName, $FormFieldTable, Get_Value($Row, $IDvali), $type['cell']['tbl'], $type['cell']['ord'], $idcol, $namecol, $FFUlName, $FFUlValue, $VoibKirjutada, $grupp);
-					break;
+		case 'SelOg':
+			$idcol = Get_Value($type['cell'], 'idcol','id');
+			$namecol = Get_Value($type['cell'], 'namecol', 'nimi');
+			$grupp = $type['cell']['groupcol'];
+			echo spf_SelOg($txtSisu, $FormFieldName, $FormFieldTable, Get_Value($Row, $IDvali), $type['cell']['tbl'], $type['cell']['ord'], $idcol, $namecol, $FFUlName, $FFUlValue, $VoibKirjutada, $grupp);
+			break;
 
-				case 'SelF':
-					$idcol = Get_Value($type['cell'], 'idcol','id');
-					$namecol = Get_Value($type['cell'], 'namecol', 'nimi');
-					echo spf_SelF($txtSisu, $FormFieldName, $FormFieldTable, Get_Value($Row, $IDvali), $type['cell']['tbl'], $type['cell']['ord'], $type['cell']['fil'], $idcol, $namecol, $FFUlName, $FFUlValue, $VoibKirjutada);
-					break;
+		case 'SelF':
+			$idcol = Get_Value($type['cell'], 'idcol','id');
+			$namecol = Get_Value($type['cell'], 'namecol', 'nimi');
+			echo spf_SelF($txtSisu, $FormFieldName, $FormFieldTable, Get_Value($Row, $IDvali), $type['cell']['tbl'], $type['cell']['ord'], $type['cell']['fil'], $idcol, $namecol, $FFUlName, $FFUlValue, $VoibKirjutada);
+			break;
 
-				case 'CB':
-					echo spf_CB($txtSisu, $FormFieldName, $FormFieldTable, Get_Value($Row, $IDvali), $VoibKirjutada, $FFUlName, $FFUlValue);
-					break;
+		case 'CB':
+			echo spf_CB($txtSisu, $FormFieldName, $FormFieldTable, Get_Value($Row, $IDvali), $VoibKirjutada, $FFUlName, $FFUlValue);
+			break;
 
-				case 'Submit':
-					echo spf_SB($type['cell'], $Row);
-					break;
+		case 'Submit':
+			echo spf_SB($type['cell'], $Row);
+			break;
 
-				case 'ML':
-					echo spf_ML($txtSisu, $FormFieldName, $FormFieldTable, Get_Value($Row, $IDvali), $VoibKirjutada, $type['cell']['col'], $type['cell']['row'], $FFUlName, $FFUlValue);
-					break;
+		case 'ML':
+			echo spf_ML($txtSisu, $FormFieldName, $FormFieldTable, Get_Value($Row, $IDvali), $VoibKirjutada, $type['cell']['col'], $type['cell']['row'], $FFUlName, $FFUlValue);
+			break;
 
-				default:
-					echo spf_TB($txtSisu, $FormFieldName, $FormFieldTable, Get_Value($Row, $IDvali), $VoibKirjutada, $ip_taust, 5, $FFUlName, $FFUlValue);
-			}
+		default:
+			echo spf_TB($txtSisu, $FormFieldName, $FormFieldTable, Get_Value($Row, $IDvali), $VoibKirjutada, $ip_taust, 5, $FFUlName, $FFUlValue);
+		}
         
-			$colcount++;
+		$colcount++;
 
-		endforeach;
+	endforeach;
         
-    endif;
+	endif;
 }
 
 
