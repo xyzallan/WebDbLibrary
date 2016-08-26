@@ -17,13 +17,11 @@ function GeneTableRow($Row, $cols, $KirjuOigus, $hidden_fix, $isSumRow = false, 
 {
 	
 	global $ISConfig;
-    $table_name = Get_Value($hidden_fix, 'table','');
+	$table_name = Get_Value($hidden_fix, 'table','');
 
-    $FFUlName = Get_Value($hidden_fix,'ul_name', '');
-    $FFUlValue = Get_Value($hidden_fix,'ul_value', '');
+	$FFUlName = Get_Value($hidden_fix,'ul_name', '');
+	$FFUlValue = Get_Value($hidden_fix,'ul_value', '');
 
-	
-	
     PrintArray($Row);
 
     if (is_array($cols)) :
@@ -32,8 +30,8 @@ function GeneTableRow($Row, $cols, $KirjuOigus, $hidden_fix, $isSumRow = false, 
         foreach($cols as $col=>$type):
 
             if(!is_null($numCols)):
-                    echo $colcount%$numCols == 0 ? "\n<tr>" : ""; 
-                    echo "\n<td class='parem'><i>" . Get_Value($type, parsFieldDescr) . "</i>: ";
+			    echo $colcount%$numCols == 0 ? "\n<tr>" : ""; 
+			    echo "\n<td class='parem'><i>" . Get_Value($type, parsFieldDescr) . "</i>: ";
             endif;
 		
 		
@@ -52,21 +50,6 @@ function GeneTableRow($Row, $cols, $KirjuOigus, $hidden_fix, $isSumRow = false, 
             endif;
 
             $ct = '';
-			
-            /*
-            Kui sisutüübiks on funktsioon
-            */
-            if($txtType == "f"):
-
-                $vahe = array();
-                foreach($type['params'] as $key=>$value)
-                {
-                        $vahe = array_merge($vahe, array("$value"=>Get_Value($Row,$value)));
-                }
-
-                $txtSisu = call_user_func_array($col, array_values($vahe));
-            
-            endif;
 
             if(array_key_exists('cell', $type))
             {
@@ -263,10 +246,7 @@ function GeneVertTableForm($ab_res='', $cols='', $hidden_fix='', $view='', $name
 	while($Row = ab_fetch_array_name($ab_res)):
 		$AllRows[] = $Row;
 	endwhile;
-	
-	
-	echo "<!-- Tühi rida $KasLisaTyhiRida -->";
-	
+
     $editbtn = "<img width='16' height='16' src='" . SetFilePath('images','b_browse.png') . "' alt='edit'>";
 
     $RiduYhesTabelis = 50;
@@ -290,11 +270,11 @@ function GeneVertTableForm($ab_res='', $cols='', $hidden_fix='', $view='', $name
             $RowIDmin = $i;
             $RowIDmax = min($i+$RiduYhesTabelis-1, $RiduKokku);
             if($LabelCol):
-                    $Label1 = $AllRows[$RowIDmin-1][$LabelCol];
-                    $Label2 = $AllRows[$RowIDmax-1][$LabelCol];
+                $Label1 = $AllRows[$RowIDmin-1][$LabelCol];
+                $Label2 = $AllRows[$RowIDmax-1][$LabelCol];
             else:
-                    $Label1 = $RowIDmin;
-                    $Label2 = $RowIDmax;
+                $Label1 = $RowIDmin;
+                $Label2 = $RowIDmax;
             endif;
             $aURI['minrida'] = "minrida=$i";
             printf("<a href='%s?%s'>[%s-%s]</a> ", $_SERVER['SCRIPT_NAME'], implode('&amp;', $aURI) ,$Label1, $Label2);
@@ -304,9 +284,7 @@ function GeneVertTableForm($ab_res='', $cols='', $hidden_fix='', $view='', $name
     endif;
     
     $MinRida = Get_Value($_GET, 'minrida', 1);
-    
-	
-	
+
     echo "\n<br>\n<table class='grid' id='gentbl'>\n";
 
     echo "<thead>";
@@ -363,26 +341,26 @@ function GeneVertTableForm($ab_res='', $cols='', $hidden_fix='', $view='', $name
 				$RowClass = "Rida" . ($Rida%2);
 			endif;
 			
-		printf("\n\n<tr id='X_sisu_%d' class='%s'>", $Rida, $RowClass);
+			printf("\n\n<tr id='X_sisu_%d' class='%s'>", $Rida, $RowClass);
+	
+			GeneTableRow($Row, $cols, $Kirjutamine, $hidden_fix);
 
-		GeneTableRow($Row, $cols, $Kirjutamine, $hidden_fix);
 
+			if(is_array($view))
+			{
+				echo "\n\t<td class='kesk'>";
+	
+				$ViewID = Get_Value($Row, $view['idfield']);
+	
+				if (!empty($ViewID)):
+					printf("\n\t<a href = '?do=%s&amp;%s=%s'>%s</a>", $view['do'], $view['idname'], $ViewID, $editbtn);
+				endif;
+			}
 
-		if(is_array($view))
-		{
-			echo "\n\t<td class='kesk'>";
-
-			$ViewID = Get_Value($Row, $view['idfield']);
-
-			if (!empty($ViewID)):
-				printf("\n\t<a href = '?do=%s&amp;%s=%s'>%s</a>", $view['do'], $view['idname'], $ViewID, $editbtn);
-			endif;
-		}
-
-		if(Get_Value($_SESSION, 'SysAdmin') && Get_Value($tbl_type, tbltparsDeleteRow, 0))
-		{
-			echo "\n\t<td class='kesk'><input type='image' src='" . SetFilePath('images','b_drop.png') . "' alt='Kustuta' style='border: none;' onClick=\"DeleteRow('" . Get_Value($hidden_fix, 'table','') . "', " . $Row['id']. ")\">";
-		}
+			if(Get_Value($_SESSION, 'SysAdmin') && Get_Value($tbl_type, tbltparsDeleteRow, 0))
+			{
+				echo "\n\t<td class='kesk'><input type='image' src='" . SetFilePath('images','b_drop.png') . "' alt='Kustuta' style='border: none;' onClick=\"DeleteRow('" . Get_Value($hidden_fix, 'table','') . "', " . $Row['id']. ")\">";
+			}
 		endif;
             
 	endforeach;
@@ -391,14 +369,11 @@ function GeneVertTableForm($ab_res='', $cols='', $hidden_fix='', $view='', $name
 
     $Rida++;
 
-    if($SumRida)
-    {
+    if($SumRida):
         echo "<tfoot>";
 		
-		foreach($cols as $key=>$value)
-        {
-            if(is_array(Get_Value($value, 'keskmine')))
-            {
+		foreach($cols as $key=>$value):
+            if(is_array(Get_Value($value, 'keskmine'))):
                 $Jagamine = Get_Value($value, 'keskmine');
                 $UL = Get_Value($Sums, $Jagamine['nom']);
                 $AL = Get_Value($Sums, $Jagamine['den']);
@@ -408,30 +383,26 @@ function GeneVertTableForm($ab_res='', $cols='', $hidden_fix='', $view='', $name
 					$KE = round($UL/$AL*$KO, $Koma);
 					$Sums[$key] = $KE;
 				endif;
-            }
-        }
+			endif;
+        endforeach;
         echo "\n\n<tr class='RidaSum'>";
 
         GeneTableRow($Sums, $cols, 0, $hidden_fix);
 
         if(is_array($view)):
-                echo "\n\t<td class='kesk'><!--view-->&nbsp;";
+            echo "\n\t<td class='kesk'><!--view-->&nbsp;";
         endif;
         
-        if(Get_Value($_SESSION, 'SysAdmin') && Get_Value($tbl_type, tbltparsDeleteRow, 0))
-        {
+        if(Get_Value($_SESSION, 'SysAdmin') && Get_Value($tbl_type, tbltparsDeleteRow, 0)):
             echo "\n\t<td class='kesk'>";
-			//<input type='image' src='" . SetFilePath('images','b_drop.png') . "' alt='Kustuta' style='border: none;' onClick=\"DeleteRow('" . Get_Value($hidden_fix, 'table','') . "', " . $Row['id']. ")\">";
-        }
+        endif;
         echo "</tfoot>";
-    }
+    endif;
 
 
     echo "\n</table>";   
 
 }
-
-
 
 function GeneVertTableFooter($LisaTyhiRida, &$Rida, $view, $hidden_fix, $cols, $nTulp, $add_empty, $LisaRida, $Kustutus)
 {
@@ -486,17 +457,12 @@ function GeneHoriTableForm($ab_res='', $cols='', $hidden_fix='', $name='', $tbl_
 
 	$Kirjutamine = Get_Value($tbl_type, tbltparCanWrite, 0);
 
-/*
-	$FFUlName = Get_Value($hidden_fix, 'ul_name', '');
-    $FFUlValue = Get_Value($hidden_fix, 'ul_value', '');
-*/
     $Row = ab_fetch_array_name($ab_res);
 
     PrintArray($Row);
     
     echo "\n<br>\n<table class='vert-tbl'>";
-		GeneTableRow($Row, $cols, $Kirjutamine, $hidden_fix, false, $ncols);
-	
+	GeneTableRow($Row, $cols, $Kirjutamine, $hidden_fix, false, $ncols);
 
     echo "\n</table>";
 
