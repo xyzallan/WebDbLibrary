@@ -171,7 +171,7 @@ function Num2Text($Number, $Komakohti = null)
 	{
 		$koma = strpos(strrev($Number),".");
 	}
-	return @number_format($Nr, $koma, ",","");
+	return @number_format($Nr, $koma, ","," ");
 
 }
 
