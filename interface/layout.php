@@ -48,7 +48,6 @@ $KOIK = $Tulem["t"] + $Tulem["f"];
 <div style="width: 100%; text-align: center;">
 
 <table style="width: 100%; border-spacing:0;">
-<tr><td colspan=2 style="height: 50px;" >
 <tr><td colspan=2 class="header-riba" style="text-align: right; ">Lehel: <?=$LOGIT?>/<?=$KOIK?>
 <!-- background: url('<?=SetFilePath('template', 'orange_top_bg.gif')?>'); height: 30px; text-align: right; vertical-align: bottom; -->
 <?php if($ISConfig->MultiLang){?>
