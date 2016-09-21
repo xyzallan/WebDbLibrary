@@ -147,6 +147,8 @@ $_SESSION['PrintNO'] = Get_Value($_GET, 'do') ? 0 : 1;
 $tblt = Get_Value($Page_Cont_Row,"tblt");
 if (is_array($tblt)):
 	$_SESSION['PrintNO'] = Get_Value($tblt, PCA_tblt::HidePrintPDF, 0);
+else:
+	$_SESSION['PrintNO'] = 1;
 endif;
 
 LoadLibrary('titleh2', CPath);
